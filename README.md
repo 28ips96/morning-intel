@@ -6,7 +6,8 @@ An automated daily digest that pulls fresh articles from RSS feeds across Financ
 
 ## Screenshot
 
-> _Add a screenshot of the email digest here once you have one._
+> <img width="1123" height="641" alt="image" src="https://github.com/user-attachments/assets/f7c53dfe-3116-40fe-8a81-3785a78f3ea7" />
+
 
 ---
 
