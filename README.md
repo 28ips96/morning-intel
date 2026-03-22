@@ -20,7 +20,7 @@ An automated daily digest that pulls fresh articles from RSS feeds across Financ
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/morning-intel.git
+git clone <repo>
 cd morning-intel
 ```
 
