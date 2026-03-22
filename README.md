@@ -6,7 +6,7 @@ An automated daily digest that pulls fresh articles from RSS feeds across Financ
 
 ## Screenshot
 
-> ![IMG_9330](https://github.com/user-attachments/assets/eb708669-b2fa-4c24-8f08-45c70f609f82)
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/eb708669-b2fa-4c24-8f08-45c70f609f82" width="600">
 </p>
