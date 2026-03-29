@@ -11,6 +11,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from google import genai
 from google.genai import types
+from google.genai.errors import ServerError
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -180,10 +182,16 @@ def build_prompt(all_articles):
     return "Here are today's articles:\n\n" + "\n---\n".join(lines)
 
 
+@retry(
+    retry=retry_if_exception_type(ServerError),
+    wait=wait_exponential(multiplier=1, min=10, max=60),
+    stop=stop_after_attempt(4),
+    reraise=True,
+)
 def call_gemini(prompt):
     client = genai.Client(api_key=GEMINI_API_KEY)
     response = client.models.generate_content(
-        model="gemini-flash-latest",
+        model="gemini-1.5-flash-002",          # pinned, off volatile -latest
         contents=prompt,
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
