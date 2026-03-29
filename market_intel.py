@@ -32,55 +32,107 @@ FEEDS = {
         "https://www.ft.com/rss/home",
         "https://feeds.bbci.co.uk/news/business/rss.xml",
         "https://www.cnbc.com/id/10001147/device/rss/rss.html",
-        "https://www.cnbc.com/id/100003114/device/rss/rss.html",
-        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147",
+        "https://feeds.reuters.com/reuters/businessNews",
+        "https://api.axios.com/feed/markets",
     ],
     "Geopolitics": [
         "https://feeds.bbci.co.uk/news/world/rss.xml",
         "https://rss.dw.com/rdf/rss-en-all",
         "https://feeds.npr.org/1004/rss.xml",
+        "https://feeds.reuters.com/Reuters/worldNews",
+        "https://feeds.bbci.co.uk/news/world/asia/rss.xml",
     ],
     "Tech": [
         "https://techcrunch.com/feed/",
         "https://www.theverge.com/rss/index.xml",
         "https://feeds.wired.com/wired/index",
-        "https://www.theverge.com/rss/index.xml",
         "https://hnrss.org/frontpage",
+        "https://feeds.arstechnica.com/arstechnica/index",
+        "https://www.technologyreview.com/feed/",
     ],
     "Venture": [
         "https://techcrunch.com/category/venture/feed/",
+        "https://news.crunchbase.com/feed/",
     ],
     "AI Commerce": [
         "https://retaildive.com/feeds/news/",
         "https://www.modernretail.co/feed/",
     ],
+    "AI & LLMs": [
+        "https://www.deeplearning.ai/the-batch/feed/",
+        "https://huggingface.co/blog/feed.xml",
+        "https://www.technologyreview.com/topic/artificial-intelligence/feed",
+        "https://venturebeat.com/category/ai/feed/",
+    ],
+    "Jobs & Hiring": [
+        "https://www.businessinsider.com/rss",
+        "https://feeds.feedburner.com/TechCrunchIT",
+        "https://www.cnbc.com/id/10001147/device/rss/rss.html",
+    ],
+    "Energy & Climate": [
+        "https://www.canarymedia.com/articles.rss",
+        "https://feeds.bloomberg.com/green/news.rss",
+        "https://feeds.reuters.com/reuters/environment",
+        "https://electrek.co/feed/",
+    ],
+    "US Policy": [
+        "https://rss.politico.com/politics-news.xml",
+        "https://thehill.com/rss/syndicator/19109",
+        "https://api.axios.com/feed/politics",
+    ],
+    "India & Emerging Markets": [
+        "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
+        "https://www.livemint.com/rss/news",
+        "https://feeds.reuters.com/reuters/INtopNews",
+    ],
+    "Healthcare & Biotech": [
+        "https://www.statnews.com/feed/",
+        "https://www.fiercebiotech.com/rss/xml",
+        "https://www.healthcaredive.com/feeds/news/",
+    ],
+    "Pop Culture & Creator": [
+        "https://www.theverge.com/culture/rss/index.xml",
+        "https://api.axios.com/feed/media-trends",
+        "https://variety.com/feed/",
+    ],
 }
 
-ARTICLES_PER_CATEGORY = 10  # fetch more to survive freshness + dedup filters
+ARTICLES_PER_CATEGORY = 20  # fetch more to survive freshness + dedup filters
 
 SYSTEM_PROMPT = (
-    "You are a sharp analyst writing for a smart MBA student who wants to understand "
-    "what is actually happening in business and why it matters.\n\n"
-    "For each story you include, your insight must have three parts — write them as one "
-    "flowing paragraph, not as labeled sections:\n\n"
+    "You are a sharp analyst writing a daily briefing for a senior MBA candidate "
+    "with a background in fintech, enterprise software, and AI products, who is "
+    "actively recruiting for Senior PM and Strategy roles at AI-first companies "
+    "on the US West Coast.\n\n"
+    "For each story, write one flowing paragraph with three parts:\n\n"
     "First sentence: what actually happened, in plain English. No jargon.\n\n"
-    "Second sentence: why it happened or what it signals about a bigger trend.\n\n"
-    "Third sentence: the so-what — what this means for someone working in AI, enterprise "
-    "software, or retail. Make this concrete and slightly dry-funny if the situation calls for it.\n\n"
+    "Second sentence: why it happened or what it signals about a bigger trend — "
+    "use analytical framing where relevant (market structure, incentives, macro forces).\n\n"
+    "Third sentence: the so-what — make this concrete and specific. If the story "
+    "is relevant to someone in AI products, fintech, enterprise SaaS, or PM hiring "
+    "on the West Coast, call that angle out directly. Occasionally dry-funny if "
+    "the situation calls for it.\n\n"
     "Rules:\n"
-    "- If a story is genuinely irrelevant to business, tech, finance, geopolitics or commerce — "
-    "skip it entirely. Do not include blog posts, lifestyle content, or anything from unknown sources.\n"
-    "- Never use phrases like: this highlights, it is worth noting, this underscores, "
-    "in conclusion, notably.\n"
-    "- Write like a smart friend explaining the news over coffee — direct, clear, occasionally wry.\n\n"
-    "Return ONLY valid JSON. No markdown. No code blocks. Same structure as before: "
-    "keys are money_talk, world_lore, tech_tea, venture_radar, commerce_pulse, speed_round. "
-    "Each section key except speed_round must be an array of story objects with exactly these keys:\n"
-    "  - text: the three-sentence paragraph described above.\n"
-    "  - source_url: the exact URL of the article this story is based on.\n"
-    "  - source_name: short publication name (e.g. 'WSJ', 'BBC', 'TechCrunch').\n\n"
-    "Include 2 to 3 story objects per section. "
-    "speed_round must be an array of 4 to 5 objects, each with:\n"
+    "- Skip lifestyle content, blog posts, opinion pieces with no news value, "
+    "and anything from unknown or low-credibility sources.\n"
+    "- Never use: this highlights, it is worth noting, this underscores, "
+    "in conclusion, notably, it's worth mentioning.\n"
+    "- Write like a smart analyst who also happens to be a good storyteller — "
+    "direct, clear, analytically grounded, occasionally wry.\n"
+    "- If a story touches on AI infrastructure, GPU demand, datacenter buildout, "
+    "or semiconductor supply chains, treat it as high priority.\n"
+    "- If a story signals hiring trends, layoffs, or role demand in tech/AI/fintech, "
+    "flag the career angle explicitly.\n\n"
+    "Return ONLY valid JSON. No markdown. No code blocks. "
+    "Keys are: money_talk, world_lore, tech_tea, venture_radar, commerce_pulse, "
+    "ai_llms, jobs_hiring, energy_climate, us_policy, india_emerging, "
+    "health_biotech, pop_culture, speed_round.\n\n"
+    "Each key except speed_round must be an array of story objects with:\n"
+    "  - text: the three-sentence paragraph.\n"
+    "  - source_url: exact article URL.\n"
+    "  - source_name: short publication name.\n\n"
+    "Include 3 to 4 story objects per section.\n"
+    "speed_round must be an array of 6 to 8 objects, each with:\n"
     "  - text: one punchy sentence.\n"
     "  - source_url: the article URL.\n\n"
     "No markdown. No code blocks. Just the JSON."
@@ -88,11 +140,18 @@ SYSTEM_PROMPT = (
 
 # Maps digest keys → (Notion category label, email section title, hex color)
 SECTION_META = {
-    "money_talk":     ("Finance",     "💰 Money Talk",      "#f59e0b"),
-    "world_lore":     ("Geopolitics", "🌍 World Lore",       "#0d9488"),
-    "tech_tea":       ("Tech",        "⚡ Tech Tea",          "#7c3aed"),
-    "venture_radar":  ("Venture",     "🚀 Venture Radar",    "#2563eb"),
-    "commerce_pulse": ("AI Commerce", "🛍️ Commerce Pulse",  "#16a34a"),
+    "money_talk":       ("Finance",                "💰 Money Talk",               "#f59e0b"),
+    "world_lore":       ("Geopolitics",            "🌍 World Lore",                "#0d9488"),
+    "tech_tea":         ("Tech",                   "⚡ Tech Tea",                  "#7c3aed"),
+    "venture_radar":    ("Venture",                "🚀 Venture Radar",             "#2563eb"),
+    "commerce_pulse":   ("AI Commerce",            "🛍️ Commerce Pulse",           "#16a34a"),
+    "ai_llms":          ("AI & LLMs",              "🤖 AI & LLMs",                "#dc2626"),
+    "jobs_hiring":      ("Jobs & Hiring",          "💼 Jobs & Hiring Intel",       "#0891b2"),
+    "energy_climate":   ("Energy & Climate",       "⚡ Energy & Climate",          "#65a30d"),
+    "us_policy":        ("US Policy",              "🏛️ US Policy & Regulation",   "#7c3aed"),
+    "india_emerging":   ("India & Emerging Markets","🌏 India & Emerging Markets", "#ea580c"),
+    "health_biotech":   ("Healthcare & Biotech",   "🏥 Healthcare & Biotech",      "#be185d"),
+    "pop_culture":      ("Pop Culture & Creator",  "🎭 Pop Culture & Creator",     "#8b5cf6"),
 }
 
 
