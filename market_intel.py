@@ -28,12 +28,26 @@ SEEN_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seen_
 FEEDS = {
     "Finance": [
         "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+         "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml",    # US Business
+         "https://feeds.a.dj.com/rss/RSSWorldNews.xml",        # World News
+          "https://feeds.a.dj.com/rss/RSSWSJD.xml",             # Tech
+        "https://feeds.a.dj.com/rss/RSSOpinion.xml",
         "https://feeds.bloomberg.com/markets/news.rss",
         "https://www.ft.com/rss/home",
         "https://feeds.bbci.co.uk/news/business/rss.xml",
         "https://www.cnbc.com/id/10001147/device/rss/rss.html",
         "https://feeds.reuters.com/reuters/businessNews",
-        "https://api.axios.com/feed/markets",
+        "https://feeds.reuters.com/reuters/topNews",
+    "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+    "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml",
+    "https://feeds.a.dj.com/rss/RSSWorldNews.xml",
+    "https://feeds.a.dj.com/rss/RSSWSJD.xml",
+    "https://feeds.bloomberg.com/markets/news.rss",
+    "https://www.ft.com/rss/home",
+    "https://feeds.bbci.co.uk/news/business/rss.xml",
+    "https://www.cnbc.com/id/10001147/device/rss/rss.html",
+    "https://feeds.reuters.com/reuters/businessNews",
+],
     ],
     "Geopolitics": [
         "https://feeds.bbci.co.uk/news/world/rss.xml",
@@ -53,6 +67,8 @@ FEEDS = {
     "Venture": [
         "https://techcrunch.com/category/venture/feed/",
         "https://news.crunchbase.com/feed/",
+        "https://www.ft.com/rss/home/private-equity",
+        "https://feeds.bloomberg.com/industries/private-equity.rss",
     ],
     "AI Commerce": [
         "https://retaildive.com/feeds/news/",
@@ -66,19 +82,19 @@ FEEDS = {
     ],
     "Jobs & Hiring": [
         "https://www.businessinsider.com/rss",
-        "https://feeds.feedburner.com/TechCrunchIT",
-        "https://www.cnbc.com/id/10001147/device/rss/rss.html",
+        "https://techcrunch.com/category/startups/feed/",
+        "https://feeds.reuters.com/reuters/technologyNews",
     ],
     "Energy & Climate": [
         "https://www.canarymedia.com/articles.rss",
-        "https://feeds.bloomberg.com/green/news.rss",
+        "https://feeds.bloomberg.com/energy/news.rss",
         "https://feeds.reuters.com/reuters/environment",
         "https://electrek.co/feed/",
     ],
     "US Policy": [
         "https://rss.politico.com/politics-news.xml",
         "https://thehill.com/rss/syndicator/19109",
-        "https://api.axios.com/feed/politics",
+        "https://feeds.npr.org/1014/rss.xml",
     ],
     "India & Emerging Markets": [
         "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
@@ -92,66 +108,95 @@ FEEDS = {
     ],
     "Pop Culture & Creator": [
         "https://www.theverge.com/culture/rss/index.xml",
-        "https://api.axios.com/feed/media-trends",
         "https://variety.com/feed/",
+        "https://deadline.com/feed/",
     ],
+     "Funded & Hiring": [
+   	 "https://techcrunch.com/category/venture/feed/",
+    	"https://news.crunchbase.com/feed/",
+    	"https://techcrunch.com/category/startups/feed/",
+    	"https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml",
+],
 }
 
-ARTICLES_PER_CATEGORY = 20  # fetch more to survive freshness + dedup filters
+ARTICLES_PER_CATEGORY = 15
 
 SYSTEM_PROMPT = (
-    "You are a sharp analyst writing a daily briefing for a senior MBA candidate "
-    "with a background in fintech, enterprise software, and AI products, who is "
-    "actively recruiting for Senior PM and Strategy roles at AI-first companies "
-    "on the US West Coast.\n\n"
-    "For each story, write one flowing paragraph with three parts:\n\n"
-    "First sentence: what actually happened, in plain English. No jargon.\n\n"
-    "Second sentence: why it happened or what it signals about a bigger trend — "
-    "use analytical framing where relevant (market structure, incentives, macro forces).\n\n"
-    "Third sentence: the so-what — make this concrete and specific. If the story "
-    "is relevant to someone in AI products, fintech, enterprise SaaS, or PM hiring "
-    "on the West Coast, call that angle out directly. Occasionally dry-funny if "
-    "the situation calls for it.\n\n"
-    "Rules:\n"
-    "- Skip lifestyle content, blog posts, opinion pieces with no news value, "
-    "and anything from unknown or low-credibility sources.\n"
-    "- Never use: this highlights, it is worth noting, this underscores, "
-    "in conclusion, notably, it's worth mentioning.\n"
-    "- Write like a smart analyst who also happens to be a good storyteller — "
-    "direct, clear, analytically grounded, occasionally wry.\n"
-    "- If a story touches on AI infrastructure, GPU demand, datacenter buildout, "
-    "or semiconductor supply chains, treat it as high priority.\n"
-    "- If a story signals hiring trends, layoffs, or role demand in tech/AI/fintech, "
-    "flag the career angle explicitly.\n\n"
-    "Return ONLY valid JSON. No markdown. No code blocks. "
-    "Keys are: money_talk, world_lore, tech_tea, venture_radar, commerce_pulse, "
-    "ai_llms, jobs_hiring, energy_climate, us_policy, india_emerging, "
-    "health_biotech, pop_culture, speed_round.\n\n"
-    "Each key except speed_round must be an array of story objects with:\n"
-    "  - text: the three-sentence paragraph.\n"
-    "  - source_url: exact article URL.\n"
-    "  - source_name: short publication name.\n\n"
-    "Include 3 to 4 story objects per section.\n"
-    "speed_round must be an array of 6 to 8 objects, each with:\n"
-    "  - text: one punchy sentence.\n"
-    "  - source_url: the article URL.\n\n"
+    "You are a sharp analyst writing a daily briefing for Ipshita — a senior MBA candidate "
+    "(Kelley School of Business, graduating May 2026) with 5+ years in fintech and enterprise "
+    "software (Credit Suisse/UBS, post-trade settlement, senior Product Manager), actively recruiting for "
+    "Senior PM and Strategy roles at tech companies on the US West Coast. She requires F-1 "
+    "OPT sponsorship. She has deep interest in AI products, productivity, product management, retail investing, personal finance, jobs and hiring trends for MBAs/Master's, private equity, India markets, and "
+    "GPU/datacenter infrastructure, F1-OPT visa, h1b, entrepreneurship, fitness, healthy and clean eating, job search (post MBA) careers, AI tools, building with AI .\n\n"
+
+    "FORMAT — Every story must have exactly these fields:\n"
+    "  - what_happened: One crisp sentence. What occurred, in plain English. No jargon.\n"
+    "  - why_it_matters: One analytical sentence. The trend, market force, or structural "
+    "shift this signals.\n"
+    "  - so_what: One sharp, specific sentence directly tied to Ipshita's profile — fintech, "
+    "AI products, enterprise SaaS, West Coast PM recruiting, NVIDIA interview prep, India "
+    "markets, or private equity. If you cannot write a genuinely specific so_what for her, "
+    "SKIP the story entirely.\n"
+    "  - source_url: exact article URL\n"
+    "  - source_name: short publication name\n\n"
+
+    "STORY COUNTS per section (strict):\n"
+    "  - ai_llms: 4-5 stories. Prioritize: New tools one can build with AI, new AI tools in the market, GPU demand, LLM releases, agent frameworks, hottest AI trends, AI for productivity, AI to build a PM portfolio"
+    "AI infrastructure, datacenter buildout, semiconductor supply chains.\n"
+    "  - jobs_hiring: 4-5 stories. Prioritize: tech/AI/fintech layoffs, hiring freezes, "
+    "role demand signals, what AI-first companies are hiring for, skills needed to get hired, MBA jobs, PM/strategy job market.\n"
+    "  - venture_radar: 3 stories. Include both VC rounds AND private equity deals, buyouts, "
+    "growth equity. Flag fintech, enterprise SaaS, or AI deals explicitly or any other major deals.\n"
+    "  - money_talk: 3 stories. Macro moves, markets, regulation, banking, and any other major moves\n"
+    "  - world_lore: 3 stories. Most geopolitically significant stories only.\n"
+    "  - tech_tea: 3 stories. Silicon Valley news, Enterprise software, platform wars, developer tools, anything major or trendy.\n"
+    "  - india_emerging: 3 stories. India fintech, startup ecosystem, economic policy, any story that impacts my parents back in India, Agartala, Tripura is my home town so anything relevant to that, government schemes for entrepreneurs.\n"
+    "  - us_policy: 2 stories. Most impactful for tech/AI/fintech/F1-OPT or h1b visa, immigrations industries only.\n"
+    "  - energy_climate: 2 stories. Only stories touching AI datacenter power, EV adoption, and anything else that's relevant "
+    "or grid infrastructure — skip pure climate policy.\n"
+    "  - commerce_pulse: 2 stories. Only AI in retail or enterprise commerce.\n"
+    "  - health_biotech: 2 stories. Drug approvals, digital health, or biotech funding only, anything else thats relevant.\n"
+    "  - pop_culture: 2 stories. Creator economy, platform business model shifts, anything relevant. \n\n"
+	"  - funded_hiring: 5-7 companies. Only include Series A/B, Series C+, or PE/Growth Equity "
+	"deals in AI/LLMs, Fintech, Enterprise SaaS, Healthcare, or Climate/Energy. "
+	"For each company include: what they build, amount raised, funding stage, lead investor if known, "
+	"and a specific so_what flagging whether this company is likely hiring Senior PMs, "
+	"Strategy, or TPM roles based on their stage and sector. "
+	"Skip seed rounds and consumer apps entirely.\n"
+
+    "RULES:\n"
+    "- If you cannot write a genuinely specific so_what for Ipshita, skip the story.\n"
+    "- Never use: this highlights, it is worth noting, this underscores, in conclusion, "
+    "notably, it's worth mentioning.\n"
+    "- Flag career-relevant signals (layoffs, hiring, PM role demand, post-MBA career, visa implications) explicitly in so_what.\n"
+    "- Write like a sharp analyst — direct, clear, analytically grounded, occasionally wry.\n\n"
+
+    "Return ONLY valid JSON. No markdown. No code blocks.\n"
+    "Top-level keys: money_talk, world_lore, tech_tea, venture_radar, commerce_pulse, "
+    "ai_llms, jobs_hiring, energy_climate, us_policy, india_emerging, health_biotech, "
+    "pop_culture, speed_round.\n\n"
+    "Each key except speed_round is an array of story objects with exactly:\n"
+    "  what_happened, why_it_matters, so_what, source_url, source_name\n\n"
+    "speed_round: array of 6-8 objects each with: text, source_url\n\n"
     "No markdown. No code blocks. Just the JSON."
 )
 
 # Maps digest keys → (Notion category label, email section title, hex color)
 SECTION_META = {
-    "money_talk":       ("Finance",                "💰 Money Talk",               "#f59e0b"),
-    "world_lore":       ("Geopolitics",            "🌍 World Lore",                "#0d9488"),
-    "tech_tea":         ("Tech",                   "⚡ Tech Tea",                  "#7c3aed"),
-    "venture_radar":    ("Venture",                "🚀 Venture Radar",             "#2563eb"),
-    "commerce_pulse":   ("AI Commerce",            "🛍️ Commerce Pulse",           "#16a34a"),
-    "ai_llms":          ("AI & LLMs",              "🤖 AI & LLMs",                "#dc2626"),
-    "jobs_hiring":      ("Jobs & Hiring",          "💼 Jobs & Hiring Intel",       "#0891b2"),
-    "energy_climate":   ("Energy & Climate",       "⚡ Energy & Climate",          "#65a30d"),
-    "us_policy":        ("US Policy",              "🏛️ US Policy & Regulation",   "#7c3aed"),
-    "india_emerging":   ("India & Emerging Markets","🌏 India & Emerging Markets", "#ea580c"),
-    "health_biotech":   ("Healthcare & Biotech",   "🏥 Healthcare & Biotech",      "#be185d"),
-    "pop_culture":      ("Pop Culture & Creator",  "🎭 Pop Culture & Creator",     "#8b5cf6"),
+    "money_talk":      ("Finance",                  "💰 Money Talk",               "#f59e0b"),
+    "world_lore":      ("Geopolitics",              "🌍 World Lore",               "#0d9488"),
+    "tech_tea":        ("Tech",                     "⚡ Tech Tea",                 "#7c3aed"),
+    "venture_radar":   ("Venture",                  "🚀 Venture Radar",            "#2563eb"),
+    "commerce_pulse":  ("AI Commerce",              "🛍️ Commerce Pulse",          "#16a34a"),
+    "ai_llms":         ("AI & LLMs",                "🤖 AI & LLMs",               "#dc2626"),
+    "jobs_hiring":     ("Jobs & Hiring",            "💼 Jobs & Hiring Intel",      "#0891b2"),
+    "energy_climate":  ("Energy & Climate",         "⚡ Energy & Climate",         "#65a30d"),
+    "us_policy":       ("US Policy",                "🏛️ US Policy & Regulation",  "#6d28d9"),
+    "india_emerging":  ("India & Emerging Markets", "🌏 India & Emerging Markets", "#ea580c"),
+    "health_biotech":  ("Healthcare & Biotech",     "🏥 Healthcare & Biotech",     "#be185d"),
+    "pop_culture":     ("Pop Culture & Creator",    "🎭 Pop Culture & Creator",    "#8b5cf6"),
+     "funded_hiring": ("Funded & Hiring", "💸 Funded & Hiring", "#059669"),
+
 }
 
 
@@ -174,10 +219,9 @@ def save_seen_urls(seen: set):
 # ── RSS fetching ──────────────────────────────────────────────────────────────
 
 def is_fresh(entry):
-    """Return True if the entry was published within the last 24 hours."""
     parsed = entry.get("published_parsed") or entry.get("updated_parsed")
     if not parsed:
-        return False  # no date → skip
+        return False
     pub_dt = datetime.datetime(*parsed[:6], tzinfo=timezone.utc)
     cutoff = datetime.datetime.now(timezone.utc) - timedelta(hours=24)
     return pub_dt >= cutoff
@@ -250,7 +294,7 @@ def build_prompt(all_articles):
 def call_gemini(prompt):
     client = genai.Client(api_key=GEMINI_API_KEY)
     response = client.models.generate_content(
-        model="models/gemini-2.5-flash",          # pinned, off volatile -latest
+        model="models/gemini-2.5-flash",
         contents=prompt,
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
@@ -262,17 +306,23 @@ def call_gemini(prompt):
 # ── Notion ────────────────────────────────────────────────────────────────────
 
 def section_to_text(stories):
-    """Flatten an array of story objects into a plain string for Notion's rich_text field."""
     if isinstance(stories, str):
         return stories
     parts = []
     for s in stories:
-        text = s.get("text", "")
-        url  = s.get("source_url", "")
-        name = s.get("source_name", "")
-        label = f" [{name}]" if name else ""
-        parts.append(f"{text}{label} {url}".strip())
-    return "\n\n".join(parts)[:2000]  # Notion rich_text cap
+        what    = s.get("what_happened", s.get("text", ""))
+        why     = s.get("why_it_matters", "")
+        so_what = s.get("so_what", "")
+        url     = s.get("source_url", "")
+        name    = s.get("source_name", "")
+        label   = f" [{name}]" if name else ""
+        block   = (
+            f"What happened: {what}\n"
+            f"Why it matters: {why}\n"
+            f"So what for you: {so_what}{label} {url}"
+        )
+        parts.append(block.strip())
+    return "\n\n".join(parts)[:2000]
 
 
 def push_section_to_notion(section_key, stories, today):
@@ -323,12 +373,14 @@ def build_html_email(digest, today, total_fetched, total_pushed):
             return '<p style="color:#6b7280;font-size:14px;margin:0;">No stories available.</p>'
         html = ""
         for i, story in enumerate(stories):
-            text        = story.get("text", "")
-            source_url  = story.get("source_url", "")
-            source_name = story.get("source_name", "Source")
+            what_happened  = story.get("what_happened", story.get("text", ""))
+            why_it_matters = story.get("why_it_matters", "")
+            so_what        = story.get("so_what", "")
+            source_url     = story.get("source_url", "")
+            source_name    = story.get("source_name", "Source")
             is_last = i == len(stories) - 1
             divider = "" if is_last else (
-                '<div style="border-top:1px solid #f0f0f0;"></div>'
+                '<div style="border-top:1px solid #f0f0f0;margin:0 20px;"></div>'
             )
             link_html = (
                 f'<a href="{source_url}" '
@@ -336,9 +388,29 @@ def build_html_email(digest, today, total_fetched, total_pushed):
                 f'font-weight:500;letter-spacing:0.2px;">'
                 f'{source_name} →</a>'
             ) if source_url else ""
+
+            story_html = ""
+            if what_happened:
+                story_html += (
+                    f'<p style="margin:0 0 6px 0;font-size:14px;line-height:1.65;color:#1f2937;">'
+                    f'<strong style="color:#111827;">What happened:</strong> {what_happened}</p>'
+                )
+            if why_it_matters:
+                story_html += (
+                    f'<p style="margin:0 0 6px 0;font-size:14px;line-height:1.65;color:#374151;">'
+                    f'<strong style="color:#111827;">Why it matters:</strong> {why_it_matters}</p>'
+                )
+            if so_what:
+                story_html += (
+                    f'<p style="margin:0 0 10px 0;font-size:14px;line-height:1.65;color:#111827;'
+                    f'background:#fefce8;padding:8px 12px;border-radius:4px;'
+                    f'border-left:3px solid #f59e0b;">'
+                    f'<strong>So what for you:</strong> {so_what}</p>'
+                )
+
             html += f"""
             <div style="padding:16px 20px;">
-              <p style="margin:0 0 10px 0;font-size:15px;line-height:1.65;color:#1f2937;">{text}</p>
+              {story_html}
               <div style="text-align:right;">{link_html}</div>
             </div>
             {divider}"""
@@ -376,9 +448,15 @@ def build_html_email(digest, today, total_fetched, total_pushed):
                         f'font-size:12px;font-weight:500;">↗</a></li>'
                     )
                 else:
-                    bullets += f'<li style="margin-bottom:10px;color:#374151;font-size:14px;">{text}</li>'
+                    bullets += (
+                        f'<li style="margin-bottom:10px;color:#374151;font-size:14px;">'
+                        f'{text}</li>'
+                    )
             else:
-                bullets += f'<li style="margin-bottom:10px;color:#374151;font-size:14px;">{item}</li>'
+                bullets += (
+                    f'<li style="margin-bottom:10px;color:#374151;font-size:14px;">'
+                    f'{item}</li>'
+                )
         return bullets
 
     sections_html = "".join(section_card(k) for k in SECTION_META)
@@ -393,7 +471,7 @@ def build_html_email(digest, today, total_fetched, total_pushed):
 </head>
 <body style="margin:0;padding:0;background:#f3f4f6;
              font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
-  <div style="max-width:600px;margin:32px auto;padding:0 16px 32px;">
+  <div style="max-width:620px;margin:32px auto;padding:0 16px 32px;">
 
     <!-- Header -->
     <div style="background:#1a1a1a;border-radius:10px 10px 0 0;padding:28px 28px 22px;">
@@ -522,7 +600,7 @@ def main():
         except Exception as e:
             print(f"  [error] Unexpected error for {key}: {e}")
 
-    # Step 6: Persist seen URLs (add all new article URLs)
+    # Step 6: Persist seen URLs
     new_urls = {a["url"] for a in all_articles}
     seen_urls.update(new_urls)
     save_seen_urls(seen_urls)
