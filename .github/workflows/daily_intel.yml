@@ -1,16 +1,13 @@
 name: Daily Morning Intel
-
 on:
   schedule:
     - cron: '0 14 * * *'  # 9:00 AM EST = 14:00 UTC
   workflow_dispatch:        # allows manual trigger from the Actions tab
-
 jobs:
   run-digest:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # needed to commit seen_urls.json back to the repo
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -24,13 +21,18 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Morning Intel
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 1800
+          command: python market_intel.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-        run: python market_intel.py
 
       - name: Commit updated seen_urls.json
         run: |
