@@ -208,6 +208,15 @@ SECTION_META = {
 
 def load_seen_urls():
     try:
+        # Auto-expire: if file is older than 3 days, start fresh
+        if os.path.exists(SEEN_URLS_FILE):
+            file_age_days = (
+                datetime.datetime.now().timestamp() -
+                os.path.getmtime(SEEN_URLS_FILE)
+            ) / 86400
+            if file_age_days > 3:
+                print(f"  [seen_urls] File is {file_age_days:.1f} days old — resetting.")
+                return set()
         with open(SEEN_URLS_FILE, "r") as f:
             data = json.load(f)
             return set(data) if isinstance(data, list) else set()
@@ -227,7 +236,7 @@ def is_fresh(entry):
     if not parsed:
         return False
     pub_dt = datetime.datetime(*parsed[:6], tzinfo=timezone.utc)
-    cutoff = datetime.datetime.now(timezone.utc) - timedelta(hours=24)
+    cutoff = datetime.datetime.now(timezone.utc) - timedelta(hours=30)
     return pub_dt >= cutoff
 
 
