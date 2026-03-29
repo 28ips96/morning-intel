@@ -28,26 +28,15 @@ SEEN_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seen_
 FEEDS = {
     "Finance": [
         "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
-         "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml",    # US Business
-         "https://feeds.a.dj.com/rss/RSSWorldNews.xml",        # World News
-          "https://feeds.a.dj.com/rss/RSSWSJD.xml",             # Tech
+        "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml",
+        "https://feeds.a.dj.com/rss/RSSWorldNews.xml",
+        "https://feeds.a.dj.com/rss/RSSWSJD.xml",
         "https://feeds.a.dj.com/rss/RSSOpinion.xml",
         "https://feeds.bloomberg.com/markets/news.rss",
         "https://www.ft.com/rss/home",
         "https://feeds.bbci.co.uk/news/business/rss.xml",
         "https://www.cnbc.com/id/10001147/device/rss/rss.html",
         "https://feeds.reuters.com/reuters/businessNews",
-        "https://feeds.reuters.com/reuters/topNews",
-    "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
-    "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml",
-    "https://feeds.a.dj.com/rss/RSSWorldNews.xml",
-    "https://feeds.a.dj.com/rss/RSSWSJD.xml",
-    "https://feeds.bloomberg.com/markets/news.rss",
-    "https://www.ft.com/rss/home",
-    "https://feeds.bbci.co.uk/news/business/rss.xml",
-    "https://www.cnbc.com/id/10001147/device/rss/rss.html",
-    "https://feeds.reuters.com/reuters/businessNews",
-],
     ],
     "Geopolitics": [
         "https://feeds.bbci.co.uk/news/world/rss.xml",
@@ -67,29 +56,32 @@ FEEDS = {
     "Venture": [
         "https://techcrunch.com/category/venture/feed/",
         "https://news.crunchbase.com/feed/",
-        "https://www.ft.com/rss/home/private-equity",
-        "https://feeds.bloomberg.com/industries/private-equity.rss",
+        "https://feeds.reuters.com/reuters/businessNews",
+        "https://www.cnbc.com/id/10001147/device/rss/rss.html",
     ],
     "AI Commerce": [
         "https://retaildive.com/feeds/news/",
         "https://www.modernretail.co/feed/",
+        "https://techcrunch.com/feed/",
     ],
     "AI & LLMs": [
         "https://www.deeplearning.ai/the-batch/feed/",
         "https://huggingface.co/blog/feed.xml",
         "https://www.technologyreview.com/topic/artificial-intelligence/feed",
         "https://venturebeat.com/category/ai/feed/",
+        "https://www.theverge.com/rss/index.xml",
     ],
     "Jobs & Hiring": [
         "https://www.businessinsider.com/rss",
         "https://techcrunch.com/category/startups/feed/",
         "https://feeds.reuters.com/reuters/technologyNews",
+        "https://feeds.bbci.co.uk/news/business/rss.xml",
     ],
     "Energy & Climate": [
         "https://www.canarymedia.com/articles.rss",
-        "https://feeds.bloomberg.com/energy/news.rss",
-        "https://feeds.reuters.com/reuters/environment",
         "https://electrek.co/feed/",
+        "https://feeds.reuters.com/reuters/environment",
+        "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
     ],
     "US Policy": [
         "https://rss.politico.com/politics-news.xml",
@@ -103,20 +95,22 @@ FEEDS = {
     ],
     "Healthcare & Biotech": [
         "https://www.statnews.com/feed/",
-        "https://www.fiercebiotech.com/rss/xml",
+        "https://medcitynews.com/feed/",
         "https://www.healthcaredive.com/feeds/news/",
+        "https://feeds.bbci.co.uk/news/health/rss.xml",
     ],
     "Pop Culture & Creator": [
-        "https://www.theverge.com/culture/rss/index.xml",
+        "https://www.theverge.com/rss/index.xml",
+        "https://techcrunch.com/feed/",
+        "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml",
         "https://variety.com/feed/",
-        "https://deadline.com/feed/",
     ],
-     "Funded & Hiring": [
-   	 "https://techcrunch.com/category/venture/feed/",
-    	"https://news.crunchbase.com/feed/",
-    	"https://techcrunch.com/category/startups/feed/",
-    	"https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml",
-],
+    "Funded & Hiring": [
+        "https://techcrunch.com/category/venture/feed/",
+        "https://news.crunchbase.com/feed/",
+        "https://techcrunch.com/category/startups/feed/",
+        "https://feeds.reuters.com/reuters/businessNews",
+    ],
 }
 
 ARTICLES_PER_CATEGORY = 15
@@ -124,60 +118,71 @@ ARTICLES_PER_CATEGORY = 15
 SYSTEM_PROMPT = (
     "You are a sharp analyst writing a daily briefing for Ipshita — a senior MBA candidate "
     "(Kelley School of Business, graduating May 2026) with 5+ years in fintech and enterprise "
-    "software (Credit Suisse/UBS, post-trade settlement, senior Product Manager), actively recruiting for "
-    "Senior PM and Strategy roles at tech companies on the US West Coast. She requires F-1 "
-    "OPT sponsorship. She has deep interest in AI products, productivity, product management, retail investing, personal finance, jobs and hiring trends for MBAs/Master's, private equity, India markets, and "
-    "GPU/datacenter infrastructure, F1-OPT visa, h1b, entrepreneurship, fitness, healthy and clean eating, job search (post MBA) careers, AI tools, building with AI .\n\n"
+    "software (Credit Suisse/UBS, post-trade settlement, senior Product Manager), actively "
+    "recruiting for Senior PM and Strategy roles at tech companies on the US West Coast. "
+    "She requires F-1 OPT sponsorship. She has deep interest in AI products, productivity, "
+    "product management, retail investing, personal finance, jobs and hiring trends for "
+    "MBAs/Masters, private equity, India markets, GPU/datacenter infrastructure, F1-OPT visa, "
+    "h1b, entrepreneurship, fitness, healthy eating, AI tools, building with AI.\n\n"
 
-    "FORMAT — Every story must have exactly these fields:\n"
-    "  - what_happened: One crisp sentence. What occurred, in plain English. No jargon.\n"
-    "  - why_it_matters: One analytical sentence. The trend, market force, or structural "
-    "shift this signals.\n"
-    "  - so_what: One sharp, specific sentence directly tied to Ipshita's profile — fintech, "
-    "AI products, enterprise SaaS, West Coast PM recruiting, NVIDIA interview prep, India "
-    "markets, or private equity. If you cannot write a genuinely specific so_what for her, "
-    "SKIP the story entirely.\n"
-    "  - source_url: exact article URL\n"
-    "  - source_name: short publication name\n\n"
+    "FORMAT — Every story object MUST have ALL of these exact keys — no exceptions:\n"
+    "  {\n"
+    "    \"what_happened\": \"one crisp sentence — what occurred, plain English, no jargon\",\n"
+    "    \"why_it_matters\": \"one analytical sentence — the trend or structural shift this signals\",\n"
+    "    \"so_what\": \"one sharp sentence specific to Ipshita — fintech, AI products, West Coast PM "
+    "recruiting, visa/OPT, India markets, or private equity. If you cannot write a genuinely "
+    "specific so_what for her, SKIP the story entirely.\",\n"
+    "    \"source_url\": \"exact article URL\",\n"
+    "    \"source_name\": \"short publication name\"\n"
+    "  }\n"
+    "NEVER use a 'text' field. NEVER omit what_happened, why_it_matters, or so_what.\n\n"
 
-    "STORY COUNTS per section (strict):\n"
-    "  - ai_llms: 4-5 stories. Prioritize: New tools one can build with AI, new AI tools in the market, GPU demand, LLM releases, agent frameworks, hottest AI trends, AI for productivity, AI to build a PM portfolio"
-    "AI infrastructure, datacenter buildout, semiconductor supply chains.\n"
+    "DEDUPLICATION — Critical rule: each story must appear in exactly ONE section only. "
+    "If a story fits multiple sections, put it in the most relevant one and skip it elsewhere. "
+    "Never repeat the same story or URL across sections.\n\n"
+
+    "STORY COUNTS per section (strict — do not exceed or fall short):\n"
+    "  - ai_llms: 4-5 stories. Prioritize: new AI tools to build with, LLM releases, agent "
+    "frameworks, GPU demand, AI infrastructure, datacenter buildout, AI for productivity, "
+    "hottest AI trends.\n"
     "  - jobs_hiring: 4-5 stories. Prioritize: tech/AI/fintech layoffs, hiring freezes, "
-    "role demand signals, what AI-first companies are hiring for, skills needed to get hired, MBA jobs, PM/strategy job market.\n"
-    "  - venture_radar: 3 stories. Include both VC rounds AND private equity deals, buyouts, "
-    "growth equity. Flag fintech, enterprise SaaS, or AI deals explicitly or any other major deals.\n"
-    "  - money_talk: 3 stories. Macro moves, markets, regulation, banking, and any other major moves\n"
-    "  - world_lore: 3 stories. Most geopolitically significant stories only.\n"
-    "  - tech_tea: 3 stories. Silicon Valley news, Enterprise software, platform wars, developer tools, anything major or trendy.\n"
-    "  - india_emerging: 3 stories. India fintech, startup ecosystem, economic policy, any story that impacts my parents back in India, Agartala, Tripura is my home town so anything relevant to that, government schemes for entrepreneurs.\n"
-    "  - us_policy: 2 stories. Most impactful for tech/AI/fintech/F1-OPT or h1b visa, immigrations industries only.\n"
-    "  - energy_climate: 2 stories. Only stories touching AI datacenter power, EV adoption, and anything else that's relevant "
-    "or grid infrastructure — skip pure climate policy.\n"
-    "  - commerce_pulse: 2 stories. Only AI in retail or enterprise commerce.\n"
-    "  - health_biotech: 2 stories. Drug approvals, digital health, or biotech funding only, anything else thats relevant.\n"
-    "  - pop_culture: 2 stories. Creator economy, platform business model shifts, anything relevant. \n\n"
-	"  - funded_hiring: 5-7 companies. Only include Series A/B, Series C+, or PE/Growth Equity "
-	"deals in AI/LLMs, Fintech, Enterprise SaaS, Healthcare, or Climate/Energy. "
-	"For each company include: what they build, amount raised, funding stage, lead investor if known, "
-	"and a specific so_what flagging whether this company is likely hiring Senior PMs, "
-	"Strategy, or TPM roles based on their stage and sector. "
-	"Skip seed rounds and consumer apps entirely.\n"
+    "role demand signals, skills needed to get hired, MBA jobs, F1-OPT/H1B visa impacts on "
+    "hiring, PM/strategy job market on West Coast.\n"
+    "  - funded_hiring: 5-7 companies. ONLY Series A/B, Series C+, or PE/Growth Equity deals "
+    "in AI, Fintech, Enterprise SaaS, Healthcare, or Climate/Energy. For each: what they build, "
+    "amount raised, funding stage, lead investor if known, and whether they are likely hiring "
+    "Senior PMs, Strategy, or TPM roles. Skip seed rounds and consumer apps entirely.\n"
+    "  - venture_radar: 3 stories. VC rounds AND private equity deals, buyouts, growth equity. "
+    "Flag fintech, enterprise SaaS, or AI deals. Include any major deals across sectors.\n"
+    "  - money_talk: 3 stories. Macro moves, markets, regulation, banking, major financial moves.\n"
+    "  - world_lore: 3 stories. Most geopolitically significant stories only — pick the top 3.\n"
+    "  - tech_tea: 3 stories. Silicon Valley news, enterprise software, platform wars, developer "
+    "tools, anything major or trending in tech.\n"
+    "  - india_emerging: 3 stories. India fintech, startup ecosystem, economic policy, stories "
+    "that impact families in India, government schemes for entrepreneurs.\n"
+    "  - us_policy: 2 stories. Most impactful for tech/AI/fintech/F1-OPT/H1B visa industries.\n"
+    "  - energy_climate: 2 stories. AI datacenter power demand, EV adoption, grid infrastructure. "
+    "Skip pure climate policy with no tech angle.\n"
+    "  - commerce_pulse: 2 stories. AI in retail or enterprise commerce only.\n"
+    "  - health_biotech: 2 stories. Drug approvals, digital health, biotech funding.\n"
+    "  - pop_culture: 2 stories. Creator economy, platform business model shifts, social media "
+    "trends. Skip movie reviews and celebrity gossip.\n\n"
 
     "RULES:\n"
-    "- If you cannot write a genuinely specific so_what for Ipshita, skip the story.\n"
+    "- Each story appears in exactly ONE section — no duplicates across sections.\n"
+    "- Skip any story where you cannot write a genuinely specific so_what for Ipshita.\n"
     "- Never use: this highlights, it is worth noting, this underscores, in conclusion, "
     "notably, it's worth mentioning.\n"
-    "- Flag career-relevant signals (layoffs, hiring, PM role demand, post-MBA career, visa implications) explicitly in so_what.\n"
+    "- Flag career signals (layoffs, hiring, PM role demand, visa implications) in so_what.\n"
+    "- GPU, datacenter, and AI infrastructure stories are highest priority.\n"
     "- Write like a sharp analyst — direct, clear, analytically grounded, occasionally wry.\n\n"
 
     "Return ONLY valid JSON. No markdown. No code blocks.\n"
     "Top-level keys: money_talk, world_lore, tech_tea, venture_radar, commerce_pulse, "
     "ai_llms, jobs_hiring, energy_climate, us_policy, india_emerging, health_biotech, "
-    "pop_culture, speed_round.\n\n"
-    "Each key except speed_round is an array of story objects with exactly:\n"
-    "  what_happened, why_it_matters, so_what, source_url, source_name\n\n"
-    "speed_round: array of 6-8 objects each with: text, source_url\n\n"
+    "pop_culture, funded_hiring, speed_round.\n\n"
+    "Each key except speed_round is an array of story objects with the exact format above.\n"
+    "speed_round: array of 6-8 objects each with: text, source_url.\n\n"
     "No markdown. No code blocks. Just the JSON."
 )
 
@@ -187,16 +192,15 @@ SECTION_META = {
     "world_lore":      ("Geopolitics",              "🌍 World Lore",               "#0d9488"),
     "tech_tea":        ("Tech",                     "⚡ Tech Tea",                 "#7c3aed"),
     "venture_radar":   ("Venture",                  "🚀 Venture Radar",            "#2563eb"),
+    "funded_hiring":   ("Funded & Hiring",          "💸 Funded & Hiring",          "#059669"),
     "commerce_pulse":  ("AI Commerce",              "🛍️ Commerce Pulse",          "#16a34a"),
     "ai_llms":         ("AI & LLMs",                "🤖 AI & LLMs",               "#dc2626"),
     "jobs_hiring":     ("Jobs & Hiring",            "💼 Jobs & Hiring Intel",      "#0891b2"),
-    "energy_climate":  ("Energy & Climate",         "⚡ Energy & Climate",         "#65a30d"),
+    "energy_climate":  ("Energy & Climate",         "🌱 Energy & Climate",         "#65a30d"),
     "us_policy":       ("US Policy",                "🏛️ US Policy & Regulation",  "#6d28d9"),
     "india_emerging":  ("India & Emerging Markets", "🌏 India & Emerging Markets", "#ea580c"),
     "health_biotech":  ("Healthcare & Biotech",     "🏥 Healthcare & Biotech",     "#be185d"),
     "pop_culture":     ("Pop Culture & Creator",    "🎭 Pop Culture & Creator",    "#8b5cf6"),
-     "funded_hiring": ("Funded & Hiring", "💸 Funded & Hiring", "#059669"),
-
 }
 
 
