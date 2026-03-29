@@ -191,7 +191,7 @@ def build_prompt(all_articles):
 def call_gemini(prompt):
     client = genai.Client(api_key=GEMINI_API_KEY)
     response = client.models.generate_content(
-        model="gemini-1.5-flash-001",          # pinned, off volatile -latest
+        model="models/gemini-2.5-flash",          # pinned, off volatile -latest
         contents=prompt,
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
