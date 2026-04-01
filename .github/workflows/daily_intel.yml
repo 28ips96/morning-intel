@@ -1,7 +1,7 @@
 name: Daily Morning Intel
 on:
   schedule:
-    - cron: '0 14 * * *'  # 9:00 AM EST = 14:00 UTC
+    - cron: '0 12 * * *'  # 7:00 AM EST = 14:00 UTC
   workflow_dispatch:        # allows manual trigger from the Actions tab
 jobs:
   run-digest:
