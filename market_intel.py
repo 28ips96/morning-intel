@@ -335,6 +335,7 @@ def call_gemini(prompt):
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": prompt}
             ],
+                max_tokens=8000,
         )
         print("[Fallback] Groq succeeded.")
         return response.choices[0].message.content
