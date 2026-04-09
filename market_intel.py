@@ -44,7 +44,7 @@ FEEDS = {
         "https://feeds.bbci.co.uk/news/world/rss.xml",
         "https://rss.dw.com/rdf/rss-en-all",
         "https://feeds.npr.org/1004/rss.xml",
-        "https://feeds.reuters.com/Reuters/worldNews",
+        "https://feeds.bbci.co.uk/news/world/rss.xml",
         "https://feeds.bbci.co.uk/news/world/asia/rss.xml",
     ],
     "Tech": [
@@ -67,7 +67,7 @@ FEEDS = {
         "https://techcrunch.com/feed/",
     ],
     "AI & LLMs": [
-        "https://www.deeplearning.ai/the-batch/feed/",
+        "https://rss.beehiiv.com/feeds/2R3C6Bt5wj.xml",
         "https://huggingface.co/blog/feed.xml",
         "https://www.technologyreview.com/topic/artificial-intelligence/feed",
         "https://venturebeat.com/category/ai/feed/",
@@ -93,7 +93,7 @@ FEEDS = {
     "India & Emerging Markets": [
         "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
         "https://www.livemint.com/rss/news",
-        "https://feeds.reuters.com/reuters/INtopNews",
+        "https://www.thehindu.com/feeder/default.rss",
     ],
     "Healthcare & Biotech": [
         "https://www.statnews.com/feed/",
