@@ -12,7 +12,6 @@ from email.mime.text import MIMEText
 from google import genai
 from google.genai import types
 from google.genai.errors import ServerError
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from dotenv import load_dotenv
 import groq as groq_module
 
@@ -24,7 +23,7 @@ NOTION_API_KEY     = os.getenv("NOTION_API_KEY")
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 GMAIL_ADDRESS      = os.getenv("GMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+GROQ_API_KEY       = os.environ.get("GROQ_API_KEY")
 
 
 SEEN_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seen_urls.json")
@@ -40,13 +39,11 @@ FEEDS = {
         "https://www.ft.com/rss/home",
         "https://feeds.bbci.co.uk/news/business/rss.xml",
         "https://www.cnbc.com/id/10001147/device/rss/rss.html",
-        "https://feeds.reuters.com/reuters/businessNews",
     ],
     "Geopolitics": [
         "https://feeds.bbci.co.uk/news/world/rss.xml",
         "https://rss.dw.com/rdf/rss-en-all",
         "https://feeds.npr.org/1004/rss.xml",
-        "https://feeds.bbci.co.uk/news/world/rss.xml",
         "https://feeds.bbci.co.uk/news/world/asia/rss.xml",
     ],
     "Tech": [
@@ -60,7 +57,6 @@ FEEDS = {
     "Venture": [
         "https://techcrunch.com/category/venture/feed/",
         "https://news.crunchbase.com/feed/",
-        "https://feeds.reuters.com/reuters/businessNews",
         "https://www.cnbc.com/id/10001147/device/rss/rss.html",
     ],
     "AI Commerce": [
@@ -78,13 +74,11 @@ FEEDS = {
     "Jobs & Hiring": [
         "https://www.businessinsider.com/rss",
         "https://techcrunch.com/category/startups/feed/",
-        "https://feeds.reuters.com/reuters/technologyNews",
         "https://feeds.bbci.co.uk/news/business/rss.xml",
     ],
     "Energy & Climate": [
-        "https://www.canarymedia.com/articles.rss",
+        "https://www.canarymedia.com/rss",
         "https://electrek.co/feed/",
-        "https://feeds.reuters.com/reuters/environment",
         "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
     ],
     "US Policy": [
@@ -113,7 +107,6 @@ FEEDS = {
         "https://techcrunch.com/category/venture/feed/",
         "https://news.crunchbase.com/feed/",
         "https://techcrunch.com/category/startups/feed/",
-        "https://feeds.reuters.com/reuters/businessNews",
     ],
 }
 
@@ -212,7 +205,6 @@ SECTION_META = {
 
 def load_seen_urls():
     try:
-        # Auto-expire: if file is older than 3 days, start fresh
         if os.path.exists(SEEN_URLS_FILE):
             file_age_days = (
                 datetime.datetime.now().timestamp() -
@@ -288,7 +280,7 @@ def fetch_articles(category, feed_urls, limit=ARTICLES_PER_CATEGORY):
     return collected, total_seen, fresh_count
 
 
-# ── Gemini ────────────────────────────────────────────────────────────────────
+# ── Gemini + Groq fallback ────────────────────────────────────────────────────
 
 def build_prompt(all_articles):
     lines = []
@@ -302,23 +294,17 @@ def build_prompt(all_articles):
     return "Here are today's articles:\n\n" + "\n---\n".join(lines)
 
 
-@retry(
-    retry=retry_if_exception_type(ServerError),
-    wait=wait_exponential(multiplier=1, min=10, max=60),
-    stop=stop_after_attempt(4),
-    reraise=True,
-)
-
 GEMINI_MODELS = [
     "models/gemini-2.5-flash",
     "models/gemini-2.0-flash",
     "models/gemini-2.0-flash-lite",
 ]
 
+
 def call_gemini(prompt):
     # --- Gemini cascade ---
     gemini_client = genai.Client(api_key=GEMINI_API_KEY)
-    
+
     for model in GEMINI_MODELS:
         try:
             response = gemini_client.models.generate_content(
@@ -331,13 +317,13 @@ def call_gemini(prompt):
             if model != GEMINI_MODELS[0]:
                 print(f"[Fallback] Gemini used {model}")
             return response.text
-        
+
         except Exception as e:
             if "503" in str(e) or "UNAVAILABLE" in str(e):
                 print(f"[Gemini] {model} unavailable, trying next...")
                 continue
             else:
-                raise  # non-503 → surface immediately
+                raise
 
     # --- Groq fallback ---
     print("[Fallback] All Gemini models down. Trying Groq llama-3.3-70b...")
@@ -352,7 +338,7 @@ def call_gemini(prompt):
         )
         print("[Fallback] Groq succeeded.")
         return response.choices[0].message.content
-    
+
     except Exception as e:
         raise RuntimeError(f"All models failed. Last Groq error: {e}")
 
