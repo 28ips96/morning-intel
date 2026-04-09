@@ -319,7 +319,7 @@ def call_gemini(prompt):
             return response.text
 
         except Exception as e:
-            if "503" in str(e) or "UNAVAILABLE" in str(e):
+            if "503" in str(e) or "UNAVAILABLE" in str(e) or "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                 print(f"[Gemini] {model} unavailable, trying next...")
                 continue
             else:
