@@ -4,4 +4,4 @@ certifi==2024.8.30
 google-genai==1.68.0
 python-dotenv==1.2.2
 tenacity>=8.2.0
-
+groq
