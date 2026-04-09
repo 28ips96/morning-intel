@@ -22,6 +22,8 @@ NOTION_API_KEY     = os.getenv("NOTION_API_KEY")
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 GMAIL_ADDRESS      = os.getenv("GMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+
 
 SEEN_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seen_urls.json")
 
@@ -304,16 +306,54 @@ def build_prompt(all_articles):
     stop=stop_after_attempt(4),
     reraise=True,
 )
+import groq as groq_module
+
+GEMINI_MODELS = [
+    "models/gemini-2.5-flash",
+    "models/gemini-2.0-flash",
+    "models/gemini-2.0-flash-lite",
+]
+
 def call_gemini(prompt):
-    client = genai.Client(api_key=GEMINI_API_KEY)
-    response = client.models.generate_content(
-        model="models/gemini-2.5-flash",
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-        ),
-    )
-    return response.text
+    # --- Gemini cascade ---
+    gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+    
+    for model in GEMINI_MODELS:
+        try:
+            response = gemini_client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                ),
+            )
+            if model != GEMINI_MODELS[0]:
+                print(f"[Fallback] Gemini used {model}")
+            return response.text
+        
+        except Exception as e:
+            if "503" in str(e) or "UNAVAILABLE" in str(e):
+                print(f"[Gemini] {model} unavailable, trying next...")
+                continue
+            else:
+                raise  # non-503 → surface immediately
+
+    # --- Groq fallback ---
+    print("[Fallback] All Gemini models down. Trying Groq llama-3.3-70b...")
+    try:
+        groq_client = groq_module.Groq(api_key=GROQ_API_KEY)
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt}
+            ],
+        )
+        print("[Fallback] Groq succeeded.")
+        return response.choices[0].message.content
+    
+    except Exception as e:
+        raise RuntimeError(f"All models failed. Last Groq error: {e}")
 
 
 # ── Notion ────────────────────────────────────────────────────────────────────
