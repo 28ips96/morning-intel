@@ -296,8 +296,7 @@ def build_prompt(all_articles):
 
 GEMINI_MODELS = [
     "models/gemini-2.5-flash",
-    "models/gemini-2.0-flash",
-    "models/gemini-2.0-flash-lite",
+    "models/gemini-2.5-flash-lite",
 ]
 
 
