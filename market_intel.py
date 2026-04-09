@@ -14,6 +14,8 @@ from google.genai import types
 from google.genai.errors import ServerError
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from dotenv import load_dotenv
+import groq as groq_module
+
 
 load_dotenv()
 
@@ -306,7 +308,6 @@ def build_prompt(all_articles):
     stop=stop_after_attempt(4),
     reraise=True,
 )
-import groq as groq_module
 
 GEMINI_MODELS = [
     "models/gemini-2.5-flash",
