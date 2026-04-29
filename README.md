@@ -16,6 +16,15 @@ Morning Intel solves this by automating the full workflow:
 6. Deliver a formatted email digest every morning.
 
 ---
+## Impact
+
+- Automates a daily market research workflow end to end.
+- Filters and deduplicates articles before sending them to the LLM.
+- Converts unstructured news into structured insights by category.
+- Pushes outputs into Notion for long-term knowledge management.
+- Uses GitHub Actions to run the workflow on a daily schedule.
+
+---
 ## Screenshot
 
 
