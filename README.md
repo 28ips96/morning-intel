@@ -3,7 +3,19 @@
 An automated daily digest that pulls fresh articles from RSS feeds across Finance, Geopolitics, Tech, Venture, and AI Commerce — filters them for the last 24 hours, deduplicates across days, and sends them to Google Gemini for analysis. Gemini returns a structured briefing written like a sharp friend explaining the news over coffee: what happened, why it matters, and what it means for anyone working in AI, enterprise software, or retail. The digest is pushed to a Notion database and delivered as a formatted HTML email every morning.
 
 ---
+## Product thinking
 
+This project was built around a simple problem: staying informed is easy, but extracting useful signal from daily news is time-consuming.
+
+Morning Intel solves this by automating the full workflow:
+1. Pull relevant news from trusted RSS sources.
+2. Filter only articles from the last 24 hours.
+3. Deduplicate stories across days.
+4. Use Gemini to generate structured analysis.
+5. Save insights to Notion.
+6. Deliver a formatted email digest every morning.
+
+---
 ## Screenshot
 
 
